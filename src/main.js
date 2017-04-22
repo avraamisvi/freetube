@@ -11,6 +11,7 @@ import {resolvers} from "./resolvers";
 import {VideoRestService} from './videoRestService';
 
 import Database from './database';
+import Torrent from './torrent';
 
 var schema = makeExecutableSchema(
   {
@@ -27,10 +28,11 @@ app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
 app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
 
 app.get('/videos/:hash', function (req, res) {
-
   let serv = new VideoRestService();
-
-  res.send(serv.get(req.params.hash));
+  serv.get(req.params.hash).then((json) => res.send(json));
 })
+
+var torrentClient = new Torrent();
+torrentClient.seed();
 
 app.listen(4000, () => console.log('Now browse to localhost:4000/graphiql'));

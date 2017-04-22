@@ -32,10 +32,10 @@ export default class Database {
     }
 
     getVideos() {
-        return users;    
+        return videos;    
     }
 
     getServers() {
-        return users;    
+        return servers;    
     }        
 }

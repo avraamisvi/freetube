@@ -7,12 +7,12 @@ export class VideoRestService {
     }
 
     async get(hash) {
-        //let data = JSON.parse(new Buffer(hash, 'base64').toString('UTF-8'));
-        
-        let ret = await this.database.getVideos().getVideoByHash(hash);
+
+        let ret = await this.database.getVideos().getByHash(hash);
         
         if(ret && ret.dataValues) {
-            return ret.dataValues;
+
+            return JSON.stringify(ret.dataValues);
         }
 
         return null;

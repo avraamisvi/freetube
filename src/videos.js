@@ -12,7 +12,7 @@ export class VideosDB {
                 autoIncrement: true,
                 primaryKey: true
             },            
-            tile: {
+            title: {
                 type: Sequelize.STRING
             },
             description: {
@@ -39,25 +39,41 @@ export class VideosDB {
         
     }
 
-    create(ent) {
-                //TODO BETTER PLACE?
-        let us = this.User.get(ent.user);
+    async create(ent) {
+                
+        let us = await this.User.get(ent.user); //TODO BETTER PLACE?
 
-        let vid = this.Model.create(ent);
+        ent.sentDate = new Date();
+
+        let vid = await this.Model.create(ent);
 
         let hash = JSON.stringify({
             username: us.name,
-            vidId: ent.id
+            vidId: vid.id
         });
 
         hash = new Buffer(hash).toString('base64');
 
-        vid.update({
+        return vid.update({
             hash: hash
         });
-
-        return vid;
     }
+
+    async update(ent) {
+
+        let upEnt = await this.Model.findById(id);
+
+        return upEnt.update(ent);
+    } 
+
+    async delete(ent) {
+
+        let del = await this.Model.findById(id);
+
+        await del.destroy();
+
+        return del;
+    }    
 
     list(pag) {
       return this.Model.findAndCountAll({

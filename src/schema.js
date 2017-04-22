@@ -1,4 +1,7 @@
 export var typeDefs = [`
+
+scalar Date
+
 type User {
     id: Int
 	name: String
@@ -16,6 +19,7 @@ type Video {
 	title: String
 	magnetUri: String
 	description: String
+    sentDate: Date
     user: User
     hash: String
 }

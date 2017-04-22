@@ -24,7 +24,14 @@ export class UsersDB {
         freezeTableName: true // Model tableName will be the same as the model name
         });
 
+        var tempModel = this.Model;
+
         this.Model.sync({force: true}).then(function () {
+            tempModel.create({
+                name: 'freetube',
+	            email: 'freetube@freetube.com',
+                password: 'dasdsad'
+            });
         });
         
     }
@@ -32,6 +39,22 @@ export class UsersDB {
     create(ent) {
         return this.Model.create(ent);
     }
+
+    async update(ent) {
+
+        let upEnt = await this.Model.findById(id);
+
+        return upEnt.update(ent);
+    }
+
+    async delete(ent) {
+
+        let del = await this.Model.findById(id);
+
+        await del.destroy();
+
+        return del;
+    }    
 
     list(pag) {
       return this.Model.findAndCountAll({

@@ -38,6 +38,22 @@ export class ServersDB {
       })
     }
 
+    async update(ent) {
+
+        let upEnt = await this.Model.findById(id);
+
+        return upEnt.update(ent);
+    }
+
+    async delete(ent) {
+
+        let del = await this.Model.findById(id);
+
+        await del.destroy();
+
+        return del;
+    }
+
     get(id) {
         return this.Model.findById(id);
     }
