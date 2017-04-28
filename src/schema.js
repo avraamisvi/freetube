@@ -2,6 +2,16 @@ export var typeDefs = [`
 
 scalar Date
 
+enum Status {
+    OK
+    ERR
+}
+
+type StatusResponse {
+	message: String
+	status:  Status
+}
+
 type User {
     id: Int
 	name: String
@@ -11,6 +21,7 @@ type User {
 type Server {
     id: Int
 	name: String
+    kind: String
 	ip: String
 }
 
@@ -49,6 +60,7 @@ input VideoInput {
 	magnetUri: String
 	description: String
     user: Int
+    hash: String
 }
 
 type Query {
@@ -66,6 +78,10 @@ type Query {
 }
 
 type Mutation {
+
+    announce(server: ServerInput!, video: VideoInput!): StatusResponse
+    register(server: ServerInput!): StatusResponse
+    
     createUser(input: UserInput!): User
     createServer(input: ServerInput!): Server
     createVideo(input: VideoInput!): Video

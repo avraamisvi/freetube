@@ -1,38 +1,45 @@
 "use strict";
 
-import express from "express";
-import * as bodyParser from 'body-parser';
-import { graphqlExpress, graphiqlExpress } from "graphql-server-express";
-import { makeExecutableSchema } from "graphql-tools";
+import FreeTube from './freetube';
 
-import {typeDefs} from "./schema";
-import {resolvers} from "./resolvers";
 
-import {VideoRestService} from './videoRestService';
+var app = new FreeTube();
 
-import Database from './database';
-import Torrent from './torrent';
+app.start();
 
-var schema = makeExecutableSchema(
-  {
-  typeDefs:  typeDefs,
-  resolvers: resolvers
-});
+// import express from "express";
+// import * as bodyParser from 'body-parser';
+// import { graphqlExpress, graphiqlExpress } from "graphql-server-express";
+// import { makeExecutableSchema } from "graphql-tools";
 
-var database = new Database();
-database.connect();
+// import {typeDefs} from "./schema";
+// import {resolvers} from "./resolvers";
 
-var app = express();    
+// import {VideoRestService} from './videoRestService';
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
-app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
+// import Database from './database';
+// import Torrent from './torrent';
 
-app.get('/videos/:hash', function (req, res) {
-  let serv = new VideoRestService();
-  serv.get(req.params.hash).then((json) => res.send(json));
-})
+// var schema = makeExecutableSchema(
+//   {
+//   typeDefs:  typeDefs,
+//   resolvers: resolvers
+// });
 
-var torrentClient = new Torrent();
-torrentClient.seed();
+// var database = new Database();
+// database.connect();
 
-app.listen(4000, () => console.log('Now browse to localhost:4000/graphiql'));
+// var app = express();    
+
+// app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
+// app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
+
+// // app.get('/videos/:hash', function (req, res) {
+// //   let serv = new VideoRestService();
+// //   serv.get(req.params.hash).then((json) => res.send(json));
+// // })
+
+// var torrentClient = new Torrent();
+// torrentClient.seed();
+
+// app.listen(4000, () => console.log('Now browse to localhost:4000/graphiql'));

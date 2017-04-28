@@ -13,6 +13,9 @@ export class ServersDB {
             name: {
                 type: Sequelize.STRING
             },
+            kind: {
+                type: Sequelize.STRING //kind of content: if sports, video game, this allows a server not distribute content it does not want to
+            },            
             ip: {
                 type: Sequelize.STRING
             }

@@ -1,0 +1,10 @@
+{
+    "name": "Abacate",
+    "kind": "general",
+    "port": 4000,
+    "address": "192.168.1.32",
+    "servers": [
+       {"address": "192.168.1.36", "port":4000}
+    ],
+    "accept": ["general"]
+}

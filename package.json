@@ -22,6 +22,7 @@
     "graphql": "^0.9.3",
     "graphql-server-express": "^0.7.1",
     "graphql-tools": "^0.11.0",
+    "jsonfile": "^3.0.0",
     "request": "^2.81.0",
     "search-index": "^0.11.0",
     "sequelize": "^3.30.4",
