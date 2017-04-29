@@ -22,7 +22,9 @@ type Server {
     id: Int
 	name: String
     kind: String
-	ip: String
+	address: String
+    port: String
+    path: String
 }
 
 type Video {
@@ -51,8 +53,11 @@ input UserInput {
 input ServerInput {
     id: Int
 	name: String
-	ip: String
+	address: String
     kind: String
+    address: String
+    port: String
+    path: String
 }
 
 input VideoInput {

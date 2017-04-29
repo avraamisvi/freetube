@@ -2,7 +2,25 @@ import Database from './database';
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 
+import jsonfile from 'jsonfile';
+
 var database = new Database();
+
+var file = './config.json'
+var config = jsonfile.readFileSync(file);
+
+function accepts(kind) {
+    
+    for(let i = 0; i < config.accepts.length; i++) {
+        if(config.accepts[i] === kind) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//TODO break into classes
 
 export var resolvers = {
 
@@ -156,15 +174,35 @@ export var resolvers = {
         //(server: ServerInput!): StatusResponse    
 
         console.log(params.server);
-        
+
+        if(accepts(params.server.kind)) {
+            return {
+                message: "kind not accepted",
+                status:  "ERR"
+            };            
+        }
+
+        //An address can have more tha one server if in different ports and paths
+        let serv = await database.getServers().getByServer(params.server);
+
+        console.log("serv");
+        console.log(serv);
+
+        if(serv.dataValues != null) {
+            return {
+                message: "server already registered",
+                status:  "OK"
+            };            
+        }
+
         let ret = await database.getServers().create(params.server);
 
         ret = await database.getServers().get(ret.dataValues.id);
 
         return {
-            message: "",
+            message: "registered with success",
 	        status:  "OK"
-        };//TODO
+        };
     }
 
   }

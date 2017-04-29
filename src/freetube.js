@@ -59,13 +59,16 @@ export default class FreeTube {
             query: `mutation Register($server: ServerInput!){
                         register(server:$server) {
                             message
+                            status
                         }
                     }`,
             variables: {
                 server: {
                     name: this.config.name,
                     kind: this.config.kind,
-                    ip: this.config.address       
+                    address: this.config.address,
+                    port: this.config.port,
+                    path: this.config.path
                 }
             }
         };
@@ -73,15 +76,23 @@ export default class FreeTube {
         console.log(JSON.stringify(query));
 
         for(let i = 0; i < this.config.servers.length; i++) {
-
+            
+            let url = this.config.servers[i].protocol + 
+                      '://' + this.config.servers[i].address +
+                      ':' + this.config.servers[i].port + 
+                      "/" + this.config.servers[i].path;
+            
             let options = {
-                url: this.config.servers[i].address + ':' + this.config.servers[i].port + "/" + this.config.servers[i].path,
+                url: url,
                 method: 'POST',
                 json: query
             };
 
             request(options, function(err, httpResponse, body){
+                console.log('<<<<<<<<<<< RESP:');
                 console.log(body);
+                // console.log(err);
+                // console.log(httpResponse);
             });
         }
     }

@@ -16,9 +16,15 @@ export class ServersDB {
             kind: {
                 type: Sequelize.STRING //kind of content: if sports, video game, this allows a server not distribute content it does not want to
             },            
-            ip: {
+            address: {
                 type: Sequelize.STRING
-            }
+            },
+            port: {
+                type: Sequelize.STRING
+            },
+            path: {
+                type: Sequelize.STRING
+            }                     
         }, 
         {
         freezeTableName: true // Model tableName will be the same as the model name
@@ -59,5 +65,32 @@ export class ServersDB {
 
     get(id) {
         return this.Model.findById(id);
+    }
+
+    getByServer(server) {
+
+        return this.Model.findOne({
+            where: {
+                $and: {
+                    // name: {
+                    //   $eq: server.name
+                    // },
+                    address: {
+                      $eq: server.address
+                    },                   
+                    port: {
+                      $eq: server.port
+                    },
+                    path: {
+                      $eq: server.path
+                    }     
+                }
+            }            
+        });
+
+                //         $or:[
+                //     {title: {$like: '%'+search.text+'%'}},
+                //     {description: {$like: '%'+search.text+'%'}},
+                // ]
     }
 }
