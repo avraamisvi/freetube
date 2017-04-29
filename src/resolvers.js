@@ -11,6 +11,8 @@ var resolverConfig = jsonfile.readFileSync(file);
 
 function accepts(kind) {
     
+    console.log(kind);
+
     console.log(resolverConfig);
 
     for(let i = 0; i < resolverConfig.accept.length; i++) {
