@@ -3,3 +3,4 @@ lib/
 dist/
 localfiles/
 freetube.sqlite
+config.json

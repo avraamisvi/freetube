@@ -92,9 +92,9 @@ export var resolvers = {
     },
 
     async createServer(root, params, options) {
-        let ret = await database.getUsers().create(params.input);
+        let ret = await database.getServers().create(params.input);
 
-        ret = await database.getUsers().get(ret.dataValues.id);
+        ret = await database.getServers().get(ret.dataValues.id);
 
         return ret.dataValues;
     },
@@ -145,6 +145,26 @@ export var resolvers = {
         let ret = await database.getVideos().delete(params.id);
 
         return ret.dataValues;
+    },
+    
+    async announce(root, params, options) {
+        //(server: ServerInput!, video: VideoInput!)
+        //TODO
+    },
+
+    async register(root, params, options) {
+        //(server: ServerInput!): StatusResponse    
+
+        console.log(params.server);
+        
+        let ret = await database.getServers().create(params.server);
+
+        ret = await database.getServers().get(ret.dataValues.id);
+
+        return {
+            message: "",
+	        status:  "OK"
+        };//TODO
     }
 
   }
