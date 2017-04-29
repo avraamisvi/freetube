@@ -11,8 +11,8 @@ var config = jsonfile.readFileSync(file);
 
 function accepts(kind) {
     
-    for(let i = 0; i < config.accepts.length; i++) {
-        if(config.accepts[i] === kind) {
+    for(let i = 0; i < config.accept.length; i++) {
+        if(config.accept[i] === kind) {
             return true;
         }
     }
