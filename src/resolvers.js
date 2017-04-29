@@ -7,12 +7,14 @@ import jsonfile from 'jsonfile';
 var database = new Database();
 
 var file = './config.json'
-var config = jsonfile.readFileSync(file);
+var resolverConfig = jsonfile.readFileSync(file);
 
 function accepts(kind) {
     
-    for(let i = 0; i < config.accept.length; i++) {
-        if(config.accept[i] === kind) {
+    console.log(resolverConfig);
+
+    for(let i = 0; i < resolverConfig.accept.length; i++) {
+        if(resolverConfig.accept[i] === kind) {
             return true;
         }
     }
