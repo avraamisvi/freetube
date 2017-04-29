@@ -22,6 +22,7 @@ type Server {
     id: Int
 	name: String
     kind: String
+    protocol: String
 	address: String
     port: String
     path: String
@@ -55,6 +56,7 @@ input ServerInput {
 	name: String
 	address: String
     kind: String
+    protocol: String
     address: String
     port: String
     path: String

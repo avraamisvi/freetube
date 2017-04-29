@@ -47,7 +47,8 @@ export default class FreeTube {
 
         setTimeout(function(self){
             return function(){
-                self.register();
+                self.initDatabaseData();
+                // self.register();
             };
         }(this), 5000);
     }
@@ -64,8 +65,6 @@ export default class FreeTube {
     }
 
     register() {
-
-        this.initDatabaseData();
 
         let query = {
             query: `mutation Register($server: ServerInput!){

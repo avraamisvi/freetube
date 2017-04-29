@@ -36,6 +36,7 @@ function sendRegistered(server) {
                 server: {
                     name: resolverConfig.name,
                     kind: resolverConfig.kind,
+                    protocol: resolverConfig.protocol,
                     address: resolverConfig.address,
                     port: resolverConfig.port,
                     path: resolverConfig.path
@@ -97,7 +98,7 @@ async function broadcastNewServer(server) {
             };
 
             request(options, function(err, httpResponse, body){
-                console.log('<<<<<<<<<<< RESP:');
+                console.log('<<<<<<<<<<< BROAD RESP:');
                 console.log(body);
                 // console.log(err);
                 // console.log(httpResponse);
@@ -322,6 +323,9 @@ export var resolvers = {
     },
 
     async registered(root, params, options) {
+
+        console.log("registered");
+        console.log(params);
 
        if(!accepts(params.server.kind)) {
             return {
