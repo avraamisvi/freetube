@@ -34,11 +34,11 @@ function sendRegistered(server) {
                     }`,
             variables: {
                 server: {
-                    name: this.resolverConfig.name,
-                    kind: this.resolverConfig.kind,
-                    address: this.resolverConfig.address,
-                    port: this.resolverConfig.port,
-                    path: this.resolverConfig.path
+                    name: resolverConfig.name,
+                    kind: resolverConfig.kind,
+                    address: resolverConfig.address,
+                    port: resolverConfig.port,
+                    path: resolverConfig.path
                 }
             }
         };
