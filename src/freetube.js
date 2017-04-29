@@ -56,14 +56,9 @@ export default class FreeTube {
     register() {
 
         let query = {
-            query: `query Register($server: ServerInput!){
-                    
-                        register(server:$server){
-                            id
-                            title
-                            description
-                            sentDate
-                            thumbUrl
+            query: `mutation Register($server: ServerInput!){
+                        register(server:$server) {
+                            message
                         }
                     }`,
             variables: {
@@ -75,10 +70,12 @@ export default class FreeTube {
             }
         };
 
+        console.log(JSON.stringify(query));
+
         for(let i = 0; i < this.config.servers.length; i++) {
 
             let options = {
-                url: this.config.servers[i].address + ':' + this.config.servers[i].port,
+                url: this.config.servers[i].address + ':' + this.config.servers[i].port + "/" + this.config.servers[i].path,
                 method: 'POST',
                 json: query
             };

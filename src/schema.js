@@ -52,6 +52,7 @@ input ServerInput {
     id: Int
 	name: String
 	ip: String
+    kind: String
 }
 
 input VideoInput {
