@@ -3,6 +3,7 @@
     "kind": "general",
     "port": 4000,
     "address": "192.168.1.32",
+    "protocol": "http",
     "path": "graphql",
     "servers": [
        {"protocol": "http", "address": "192.168.1.36", "port":4000, "path":"graphql"}
