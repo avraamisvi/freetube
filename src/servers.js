@@ -47,6 +47,12 @@ export class ServersDB {
       })
     }
 
+    all() {
+      return this.Model.findAndCountAll({
+        raw:true
+      })
+    }    
+
     async update(ent) {
 
         let upEnt = await this.Model.findById(id);

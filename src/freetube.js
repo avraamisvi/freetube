@@ -35,17 +35,21 @@ export default class FreeTube {
             resolvers: resolvers
         });
 
-        let database = new Database();
-        database.connect();
+        this.database = new Database();
+        this.database.connect();
 
         let app = express();    
 
-        app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
-        app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
+        app.use('/' + this.config.path , bodyParser.json(), graphqlExpress({schema}));
+        app.use('/graphiql', graphiqlExpress({endpointURL: '/' + this.config.path}));
 
         app.listen(this.config.port, () => console.log('Now browse to localhost:'+this.config.port+'/graphiql'));
 
-        this.register();
+        setTimeout(function(self){
+            return function(){
+                self.register();
+            };
+        }(this), 5000);
     }
 
     seed() {
@@ -53,7 +57,15 @@ export default class FreeTube {
         torrentClient.seed();
     }
 
+    initDatabaseData() {
+        for(let i = 0; i < this.config.servers.length; i++) {            
+            this.database.getServers().create(this.config.servers[i]);
+        }
+    }
+
     register() {
+
+        this.initDatabaseData();
 
         let query = {
             query: `mutation Register($server: ServerInput!){

@@ -87,17 +87,17 @@ type Mutation {
 
     announce(server: ServerInput!, video: VideoInput!): StatusResponse
     register(server: ServerInput!): StatusResponse
+
+    broadcast(server: ServerInput!): StatusResponse
+    registered(server: ServerInput!): StatusResponse
     
     createUser(input: UserInput!): User
-    createServer(input: ServerInput!): Server
     createVideo(input: VideoInput!): Video
 
     updateUser(input: UserInput!): User
-    updateServer(input: ServerInput!): Server
     updateVideo(input: VideoInput!): Video
 
     deleteUser(id: Int!): User
-    deleteServer(id: Int!): Server
     deleteVideo(id: Int!): Video    
 }
 
