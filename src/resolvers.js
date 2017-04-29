@@ -3,6 +3,7 @@ import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 
 import jsonfile from 'jsonfile';
+import request from 'request';
 
 var database = new Database();
 
@@ -66,7 +67,7 @@ function sendRegistered(server) {
 //broadcast a new server for all the know others
 async function broadcastNewServer(server) {
     
-    console.log("broadcastNewServer");
+    console.log(">>>>>>>>>>>>>>>>>>> broadcastNewServer");
 
     let query = {
             query: `mutation Broadcast($server: ServerInput!){
@@ -78,32 +79,38 @@ async function broadcastNewServer(server) {
             variables: {
                 server: server
             }
-        };
-
-        console.log(JSON.stringify(query));
+        };        
 
         let allServers = await database.getServers().all();
+        
+        if(allServers) {
+            allServers = allServers.rows;
 
-        for(let i = 0; i < allServers.length; i++) {
-            
-            let url = allServers[i].protocol + 
-                      '://' + allServers[i].address +
-                      ':' + allServers[i].port + 
-                      "/" + allServers[i].path;
-            
-            let options = {
-                url: url,
-                method: 'POST',
-                json: query
-            };
+            for(let i = 0; i < allServers.length; i++) {
+                
+                let url = allServers[i].protocol + 
+                        '://' + allServers[i].address +
+                        ':' + allServers[i].port + 
+                        "/" + allServers[i].path;
+                
+                console.log("SEND TO");
+                console.log(url);
+                
+                let options = {
+                    url: url,
+                    method: 'POST',
+                    json: query
+                };
 
-            request(options, function(err, httpResponse, body){
-                console.log('<<<<<<<<<<< BROAD RESP:');
-                console.log(body);
-                // console.log(err);
-                // console.log(httpResponse);
-            });
+                request(options, function(err, httpResponse, body){
+                    console.log('<<<<<<<<<<< BROAD RESP:');
+                    console.log(body);
+                    console.log(err);
+                    // console.log(httpResponse);
+                });
+            }            
         }
+       
 }
 
 //TODO break into classes
@@ -282,7 +289,7 @@ export var resolvers = {
 
         ret = await database.getServers().get(ret.dataValues.id);
 
-        broadcastNewServer(params.server);
+        await broadcastNewServer(params.server);
 
         return {
             message: "registered with success",
@@ -312,8 +319,8 @@ export var resolvers = {
 
         ret = await database.getServers().get(ret.dataValues.id);
 
-        sendRegistered(params.server);
-        broadcastNewServer(params.server);
+        await sendRegistered(params.server);
+        await broadcastNewServer(params.server);
 
         return {
             message: "registered with success",
