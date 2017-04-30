@@ -16,6 +16,8 @@ import Database from './database';
 import Torrent from './torrent';
 import jsonfile from 'jsonfile';
 
+import * as serverUtils from './serverUtils';
+
 export default class FreeTube {
 
     constructor() {
@@ -45,12 +47,10 @@ export default class FreeTube {
 
         app.listen(this.config.port, () => console.log('Now browse to localhost:'+this.config.port+'/graphiql'));
 
-        setTimeout(function(self){
-            return function(){
-                self.initDatabaseData();
-                // self.register();
-            };
-        }(this), 5000);
+        setTimeout(function(){
+            serverUtils.initDatabaseData();
+            serverUtils.register();
+        }, 5000);
     }
 
     seed() {
@@ -58,55 +58,6 @@ export default class FreeTube {
         torrentClient.seed();
     }
 
-    initDatabaseData() {
-        for(let i = 0; i < this.config.servers.length; i++) {            
-            this.database.getServers().create(this.config.servers[i]);
-        }
-    }
-
-    register() {
-
-        let query = {
-            query: `mutation Register($server: ServerInput!){
-                        register(server:$server) {
-                            message
-                            status
-                        }
-                    }`,
-            variables: {
-                server: {
-                    name: this.config.name,
-                    kind: this.config.kind,
-                    address: this.config.address,
-                    port: this.config.port,
-                    path: this.config.path
-                }
-            }
-        };
-
-        console.log(JSON.stringify(query));
-
-        for(let i = 0; i < this.config.servers.length; i++) {
-            
-            let url = this.config.servers[i].protocol + 
-                      '://' + this.config.servers[i].address +
-                      ':' + this.config.servers[i].port + 
-                      "/" + this.config.servers[i].path;
-            
-            let options = {
-                url: url,
-                method: 'POST',
-                json: query
-            };
-
-            request(options, function(err, httpResponse, body){
-                console.log('<<<<<<<<<<< RESP:');
-                console.log(body);
-                // console.log(err);
-                // console.log(httpResponse);
-            });
-        }
-    }
 };
 
 // app.get('/videos/:hash', function (req, res) {

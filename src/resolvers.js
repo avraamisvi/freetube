@@ -5,113 +5,9 @@ import { Kind } from 'graphql/language';
 import jsonfile from 'jsonfile';
 import request from 'request';
 
+import * as serverUtils from './serverUtils';
+
 var database = new Database();
-
-var file = './config.json'
-var resolverConfig = jsonfile.readFileSync(file);
-
-function accepts(kind) {
-    
-    for(let i = 0; i < resolverConfig.accept.length; i++) {
-        if(resolverConfig.accept[i] == kind) {
-            return true;
-        }
-    }
-
-    return false;
-}
-//TODO move this methods
-//When a server is broadcasted to another, the unknow server sends a registered to the previous server
-function sendRegistered(server) {
-    
-    console.log("sendRegistered");
-
-    let query = {
-            query: `mutation Registered($server: ServerInput!){
-                        registered(server:$server) {
-                            message
-                            status
-                        }
-                    }`,
-            variables: {
-                server: {
-                    name: resolverConfig.name,
-                    kind: resolverConfig.kind,
-                    protocol: resolverConfig.protocol,
-                    address: resolverConfig.address,
-                    port: resolverConfig.port,
-                    path: resolverConfig.path
-                }
-            }
-        };
-
-        let url = server.protocol + 
-                    '://' + server.address +
-                    ':' + server.port + 
-                    "/" + server.path;
-        
-        let options = {
-            url: url,
-            method: 'POST',
-            json: query
-        };
-
-        request(options, function(err, httpResponse, body){
-            console.log('<<<<<<<<<<< RESP:');
-            console.log(body);
-            // console.log(err);
-            // console.log(httpResponse);
-        });
-}
-
-//broadcast a new server for all the know others
-async function broadcastNewServer(server) {
-    
-    console.log(">>>>>>>>>>>>>>>>>>> broadcastNewServer");
-
-    let query = {
-            query: `mutation Broadcast($server: ServerInput!){
-                        broadcast(server:$server) {
-                            message
-                            status
-                        }
-                    }`,
-            variables: {
-                server: server
-            }
-        };        
-
-        let allServers = await database.getServers().all();
-        
-        if(allServers) {
-            allServers = allServers.rows;
-
-            for(let i = 0; i < allServers.length; i++) {
-                
-                let url = allServers[i].protocol + 
-                        '://' + allServers[i].address +
-                        ':' + allServers[i].port + 
-                        "/" + allServers[i].path;
-                
-                console.log("SEND TO");
-                console.log(url);
-                
-                let options = {
-                    url: url,
-                    method: 'POST',
-                    json: query
-                };
-
-                request(options, function(err, httpResponse, body){
-                    console.log('<<<<<<<<<<< BROAD RESP:');
-                    console.log(body);
-                    console.log(err);
-                    // console.log(httpResponse);
-                });
-            }            
-        }
-       
-}
 
 //TODO break into classes
 
@@ -268,7 +164,7 @@ export var resolvers = {
 
         console.log(params.server);
 
-        if(!accepts(params.server.kind)) {
+        if(!serverUtils.accepts(params.server.kind)) {
             return {
                 message: "kind not accepted",
                 status:  "ERR"
@@ -289,7 +185,7 @@ export var resolvers = {
 
         ret = await database.getServers().get(ret.dataValues.id);
 
-        await broadcastNewServer(params.server);
+        await serverUtils.broadcastNewServer(params.server);
 
         return {
             message: "registered with success",
@@ -299,7 +195,7 @@ export var resolvers = {
 
     async broadcast(root, params, options) {
 
-       if(!accepts(params.server.kind)) {
+       if(!serverUtils.accepts(params.server.kind)) {
             return {
                 message: "kind not accepted",
                 status:  "ERR"
@@ -315,12 +211,15 @@ export var resolvers = {
             };            
         }
 
-        let ret = await database.getServers().create(params.server);
+        serverUtils.broadcastNewServer(params.server).then((obj)=>{
+            //NONE
+            console.log("OK");
+        });
 
+        let ret = await database.getServers().create(params.server);
         ret = await database.getServers().get(ret.dataValues.id);
 
-        await sendRegistered(params.server);
-        await broadcastNewServer(params.server);
+        await serverUtils.sendRegistered(params.server);
 
         return {
             message: "registered with success",
@@ -334,7 +233,7 @@ export var resolvers = {
         console.log("registered");
         console.log(params);
 
-       if(!accepts(params.server.kind)) {
+       if(!serverUtils.accepts(params.server.kind)) {
             return {
                 message: "kind not accepted",
                 status:  "ERR"
