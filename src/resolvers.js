@@ -89,6 +89,10 @@ export var resolvers = {
 
   Mutation: {
 
+    rateVideo(rating: VideoRateInput!) {
+        
+    }
+ 
     async createUser(root, params, options) {
 
         let ret = await database.getUsers().create(params.input);
@@ -181,11 +185,11 @@ export var resolvers = {
             };            
         }
 
+        await serverUtils.broadcastNewServer(params.server);
+
         let ret = await database.getServers().create(params.server);
 
         ret = await database.getServers().get(ret.dataValues.id);
-
-        await serverUtils.broadcastNewServer(params.server);
 
         return {
             message: "registered with success",
@@ -211,13 +215,13 @@ export var resolvers = {
             };            
         }
 
-        serverUtils.broadcastNewServer(params.server).then((obj)=>{
-            //NONE
-            console.log("OK");
-        });
-
         let ret = await database.getServers().create(params.server);
         ret = await database.getServers().get(ret.dataValues.id);
+        
+        serverUtils.broadcastNewServer(params.server).then((obj)=>{
+            //NONE
+            console.log("broadcastNewServer: OK");
+        });
 
         await serverUtils.sendRegistered(params.server);
 

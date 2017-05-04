@@ -26,6 +26,12 @@ export class VideosDB {
             },
             hash: {
                 type: Sequelize.STRING
+            },
+            like: {
+                type: Sequelize.INTEGER
+            },
+            dislike: {
+                type: Sequelize.INTEGER
             }
         }, 
         {

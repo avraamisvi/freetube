@@ -7,6 +7,11 @@ enum Status {
     ERR
 }
 
+enum Rate {
+    LIKE
+    DISLIKE
+}
+
 type StatusResponse {
 	message: String
 	status:  Status
@@ -36,6 +41,20 @@ type Video {
     sentDate: Date
     user: User
     hash: String
+    like: Int
+    dislike: Int
+}
+
+type VideoRate {
+    video: Video
+    user: User
+    rate: Rate!
+}
+
+input VideoRateInput {
+    videoId: Int!
+    userId: Int!
+    rate: Rate!
 }
 
 input Pagination {
@@ -87,6 +106,8 @@ type Query {
 
 type Mutation {
 
+    rateVideo(rating: VideoRateInput!): StatusResponse
+    
     announce(server: ServerInput!, video: VideoInput!): StatusResponse
     register(server: ServerInput!): StatusResponse
 
